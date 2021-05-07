@@ -5,7 +5,7 @@
   "scripts": {
     "prepare": "husky install",
     "serve": "redoc-cli serve openapi.yml",
-    "build": "redoc-cli bundle openapi.yml -o dist/index.html"
+    "build": "redoc-cli bundle openapi.yml -o docs/index.html"
   },
   "repository": {
     "type": "git",
