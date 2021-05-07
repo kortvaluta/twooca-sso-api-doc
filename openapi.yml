@@ -1,0 +1,244 @@
+openapi: 3.0.0
+info:
+  title: twooca user API
+  version: v1
+servers:
+  - url: https://example.com
+paths:
+  GET /oauth/authorize:
+    get:
+      summary: show authorization page
+      tags:
+        - OAuth2.0
+      parameters:
+        - name: client_id
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: redirect_uri
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: response_type
+          in: query
+          required: true
+          description: must be set `code`
+          schema:
+            type: string
+        - name: code_challenge
+          in: query
+          description: required when enable PKCE
+          schema:
+            type: string
+        - name: code_challenge_method
+          in: query
+          description: required when enable PKCE. must be set `S256`
+          schema:
+            type: string
+      responses:
+        "200":
+          description: shows authorization page
+  POST /oauth/token:
+    post:
+      summary: request access token
+      tags:
+        - OAuth2.0
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                client_id:
+                  type: string
+                client_secret:
+                  type: string
+                code:
+                  type: string
+                code_verifier:
+                  type: string
+                  description: required when enable PKCE
+                grant_type:
+                  type: string
+                  description: must be set `authorization_code`
+                redirect_uri:
+                  type: string
+              required:
+                - client_id
+                - client_secret
+                - code
+                - grant_type
+                - redirect_uri
+      responses:
+        "200":
+          description: generates access token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                  token_type:
+                    type: string
+                  expires_in:
+                    type: integer
+                  refresh_token:
+                    type: string
+        "400":
+          description: returns error when any parameter is invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  error_description:
+                    type: string
+  GET /api/v1/mobile/visa_balances/balance:
+    get:
+      summary: get VISA balance
+      tags:
+        - VISA balance
+      security:
+        - OAuth2: []
+      parameters:
+        - in: header
+          name: Authorization
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: returns VISA balance
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  balance:
+                    type: integer
+                  user_uid:
+                    type: string
+        "401":
+          description: returns error when access token is invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "404":
+          description: returns error when card does not exist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      message:
+                        type: string
+        "500":
+          description: returns error when raise API error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      message:
+                        type: string
+  POST /api/v1/mobile/visa_balances/transfer:
+    post:
+      summary: transfer VISA balance
+      tags:
+        - VISA balance
+      security:
+        - OAuth2: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                external_uid:
+                  type: string
+                amount:
+                  type: number
+              required:
+                - external_uid
+                - amount
+      responses:
+        "200":
+          description: transfers VISA balance to external uid
+        "400":
+          description: returns error when any parameter is invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      message:
+                        type: string
+        "401":
+          description: returns error when access token is invalid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "404":
+          description: returns error when card does not exist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      message:
+                        type: string
+        "500":
+          description: returns error when raise API error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                      message:
+                        type: string
+components:
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: /oauth/authorize
+          tokenUrl: /oauth/token

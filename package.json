@@ -1,0 +1,24 @@
+{
+  "name": "twooca-sso-api-doc",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "prepare": "husky install",
+    "serve": "redoc-cli serve openapi.yml",
+    "build": "redoc-cli bundle openapi.yml -o dist/index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kortvaluta/twooca-sso-api-doc.git"
+  },
+  "author": "Kort Valuta",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kortvaluta/twooca-sso-api-doc/issues"
+  },
+  "homepage": "https://github.com/kortvaluta/twooca-sso-api-doc#readme",
+  "devDependencies": {
+    "redoc-cli": "^0.11.4",
+    "husky": "^6.0.0"
+  }
+}
