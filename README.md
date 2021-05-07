@@ -1,10 +1,12 @@
-# TwooCa SSO API Document
+# TwooCa SSO API doc
 
-## Prerequisites
-
-- Node.js (see [.node-version](.node-version))
+https://kortvaluta.github.io/twooca-sso-api-doc/
 
 ## Development
+
+### Prerequisites
+
+- Node.js (see [.node-version](.node-version))
 
 ### Setup
 
